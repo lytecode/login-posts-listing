@@ -12,5 +12,5 @@ export class Post {
     body: string;
 
     @Column()
-    userId: string;
+    userId: number;
 }
