@@ -9,7 +9,7 @@ async function bootstrap() {
     .setTitle('Login Posts listing')
     .setDescription('Login post listing API documentation')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('posts')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
