@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { hashPassword } from 'src/utils';
+import { comparePassword, hashPassword } from 'src/utils';
 import { Repository } from 'typeorm';
 import { AuthDto } from './dto/auth.dto';
 import { Auth } from './entities/auth.entity';
@@ -26,13 +26,26 @@ export class AuthService {
         });
 
         const tokens = await this.getTokens(newUser.id, newUser.email);
-
         await this.updateHashRefreshToken(newUser.id, tokens.refresh_token)
 
         return tokens;
     }
 
-    login() { }
+    async login(authDto: AuthDto) {
+        const user = await this.authRepository.findOneBy({
+            email: authDto.email
+        });
+        if (!user) throw new ForbiddenException('Access denied!')
+
+        const passwordMatch = await comparePassword(authDto.password, user.password);
+        if (!passwordMatch) throw new ForbiddenException('Access denied!')
+
+        //password match
+        const tokens = await this.getTokens(user.id, user.email);
+        await this.updateHashRefreshToken(user.id, tokens.refresh_token);
+
+        return tokens;
+    }
 
     logout() { }
 
