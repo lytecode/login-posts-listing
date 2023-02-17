@@ -43,7 +43,6 @@ export class AuthService {
         //password match
         const tokens = await this.getTokens(user.id, user.email);
         await this.updateHashRefreshToken(user.id, tokens.refresh_token);
-
         return tokens;
     }
 
@@ -57,7 +56,19 @@ export class AuthService {
         )
     }
 
-    refreshToken() { }
+    async refreshToken(userId, rt: string) {
+        const user = await this.authRepository.findOneBy({
+            id: userId,
+        });
+        if (!user) throw new ForbiddenException('Access denied!');
+
+        const isRefreshTokenMatch = await comparePassword(rt, user.hashRt);
+        if (!isRefreshTokenMatch) throw new ForbiddenException('Access denied!');
+
+        const tokens = await this.getTokens(user.id, user.email);
+        await this.updateHashRefreshToken(user.id, tokens.refresh_token);
+        return tokens;
+    }
 
     async updateHashRefreshToken(userId: string, refreshToken: string) {
         const hashRefreshToken = await hashPassword(refreshToken);
