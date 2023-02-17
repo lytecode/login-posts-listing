@@ -12,6 +12,9 @@ export class Auth {
     @Column()
     password: string;
 
+    @Column()
+    hashRt: string;
+
     // @OneToMany(() => Post, (post) => post.author, { cascade: true })
     // posts: Post[];
 }
