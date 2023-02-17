@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/com
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { comparePassword, hashPassword } from 'src/utils';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { AuthDto } from './dto/auth.dto';
 import { Auth } from './entities/auth.entity';
 
@@ -47,7 +47,15 @@ export class AuthService {
         return tokens;
     }
 
-    logout() { }
+    async logout(userId: string) {
+        await this.authRepository.update(
+            {
+                id: userId,
+                hashRt: Not(IsNull())
+            },
+            { hashRt: null }
+        )
+    }
 
     refreshToken() { }
 
