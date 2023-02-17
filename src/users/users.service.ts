@@ -29,6 +29,10 @@ export class UsersService {
     return user;
   }
 
+  async findByEmail(email: string): Promise<User | undefined> {
+    return this.usersRepository.findOneBy({ email }) //this.users.find(user => user.username === username);
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.usersRepository.preload({ id, ...updateUserDto });
     if (!user) {
