@@ -6,6 +6,19 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
 
+type Pp = Omit<Post, 'author.password' | 'author.hashRt'>
+
+// {
+//   id: number;
+//   title: string;
+//   body: string;
+//   author: {
+//     id: string;
+//     email: string;
+//     name: string;
+//   }
+// }
+
 @Injectable()
 export class PostsService {
   constructor(
@@ -47,11 +60,15 @@ export class PostsService {
   }
 
   async findOne(id: number) {
-    const post = await this.postsRepository.findOneBy({ id });
+    const post = await this.postsRepository.findOne({
+      where: { id },
+      relations: ['author']
+    });
     if (!post) {
       throw new NotFoundException(`Post with id ${id} not found`);
     }
-    return post;
+
+    return ({ ...post, author: { id: post.author.id, name: post.author.name, email: post.author.email } })
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
