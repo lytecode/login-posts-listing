@@ -24,8 +24,8 @@ export class PostsController {
   }
 
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  findAll(@GetCurrentUserId() userId: string) {
+    return this.postsService.findAll(userId);
   }
 
   @Get(':id')

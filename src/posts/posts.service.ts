@@ -40,10 +40,15 @@ export class PostsService {
     return { ...rest, author: { id, name, email } };
   }
 
-  async findAll() {
+  async findAll(userId: string) {
     const results = await this.postsRepository.find({
       relations: {
         author: true
+      },
+      where: {
+        author: {
+          id: userId
+        }
       }
     });
 
@@ -56,7 +61,7 @@ export class PostsService {
       }
     }));
 
-    return posts
+    return posts;
   }
 
   async findOne(id: number) {
