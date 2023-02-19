@@ -1,4 +1,4 @@
-import { User } from "src/users/entities/user.entity";
+import { Auth } from "src/auth/entities/auth.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('posts')
@@ -12,6 +12,6 @@ export class Post {
     @Column()
     body: string;
 
-    @ManyToOne(() => User, (author) => author.posts)
-    author: User;
+    @ManyToOne(() => Auth, (author) => author.posts)
+    author: Auth;
 }
