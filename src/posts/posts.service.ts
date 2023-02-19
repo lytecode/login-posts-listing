@@ -81,7 +81,7 @@ export class PostsService {
     return ({ ...post, author: { id: post.author.id, name: post.author.name, email: post.author.email } })
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto) {
+  async update(id: number, updatePostDto: UpdatePostDto, userId: string) {
     const post = await this.postsRepository.preload({ id, ...updatePostDto });
     if (!post) {
       throw new NotFoundException(`Post with id ${id} not found`);
@@ -90,8 +90,16 @@ export class PostsService {
     return this.postsRepository.save(post);
   }
 
-  async remove(id: number) {
-    const post = await this.postsRepository.findOneBy({ id });
+  async remove(id: number, userId: string) {
+    const post = await this.postsRepository.findOne({
+      relations: ['author'],
+      where: {
+        id,
+        author: {
+          id: userId
+        }
+      }
+    });
     if (!post) {
       throw new NotFoundException(`Post with id ${id} does not exist`);
     }
