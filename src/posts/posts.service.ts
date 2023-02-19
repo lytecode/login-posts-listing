@@ -64,10 +64,15 @@ export class PostsService {
     return posts;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, userId) {
     const post = await this.postsRepository.findOne({
-      where: { id },
-      relations: ['author']
+      relations: ['author'],
+      where: {
+        id: id,
+        author: {
+          id: userId
+        }
+      }
     });
     if (!post) {
       throw new NotFoundException(`Post with id ${id} not found`);

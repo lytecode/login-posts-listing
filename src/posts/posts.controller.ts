@@ -29,8 +29,8 @@ export class PostsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.postsService.findOne(id);
+  findOne(@Param('id') id: number, @GetCurrentUserId() userId: string) {
+    return this.postsService.findOne(id, userId);
   }
 
   @Patch(':id')
