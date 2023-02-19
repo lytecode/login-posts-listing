@@ -27,8 +27,23 @@ export class PostsService {
     return { ...rest, author: { id, name, email } };
   }
 
-  findAll() {
-    return this.postsRepository.find();
+  async findAll() {
+    const results = await this.postsRepository.find({
+      relations: {
+        author: true
+      }
+    });
+
+    const posts = results.map(({ id, title, body, author }) => ({
+      id, title, body,
+      author: {
+        id: author.id,
+        email: author.email,
+        name: author.name
+      }
+    }));
+
+    return posts
   }
 
   async findOne(id: number) {
