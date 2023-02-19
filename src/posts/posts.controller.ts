@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -34,12 +36,13 @@ export class PostsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(id, updatePostDto);
+  update(@Param('id') id: number, @Body() updatePostDto: UpdatePostDto, @GetCurrentUserId() userId: string) {
+    return this.postsService.update(id, updatePostDto, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.postsService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id') id: number, @GetCurrentUserId() userId: string) {
+    return this.postsService.remove(id, userId);
   }
 }
