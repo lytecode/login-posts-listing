@@ -11,6 +11,7 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { GetCurrentUserId } from 'src/auth/common/decorators';
 
 @Controller('/api/v1/posts')
 @ApiTags('posts')
@@ -18,8 +19,8 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) { }
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  create(@Body() createPostDto: CreatePostDto, @GetCurrentUserId() userId: string) {
+    return this.postsService.create(createPostDto, userId);
   }
 
   @Get()
