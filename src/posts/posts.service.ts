@@ -5,20 +5,6 @@ import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
-
-type Pp = Omit<Post, 'author.password' | 'author.hashRt'>
-
-// {
-//   id: number;
-//   title: string;
-//   body: string;
-//   author: {
-//     id: string;
-//     email: string;
-//     name: string;
-//   }
-// }
-
 @Injectable()
 export class PostsService {
   constructor(
