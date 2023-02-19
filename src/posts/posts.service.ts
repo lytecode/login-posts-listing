@@ -82,12 +82,14 @@ export class PostsService {
   }
 
   async update(id: number, updatePostDto: UpdatePostDto, userId: string) {
-    const post = await this.postsRepository.preload({ id, ...updatePostDto });
+    const post = await this.findOne(id, userId);
     if (!post) {
       throw new NotFoundException(`Post with id ${id} not found`);
     }
 
-    return this.postsRepository.save(post);
+    const postToUpdate = await this.postsRepository.preload({ id, ...updatePostDto });
+
+    return this.postsRepository.save(postToUpdate);
   }
 
   async remove(id: number, userId: string) {
